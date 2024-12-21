@@ -1,0 +1,21 @@
+#kafka:
+#  bootstrap_servers: "pkc-w77k7w.centralus.azure.confluent.cloud:9092"
+#  security_protocol: "SASL_SSL"
+#  sasl:
+#    mechanism: "PLAIN" # 'SCRAM-SHA-256'
+#    jaas_config: #"org.apache.kafka.common.security.plain.PlainLoginModule required username='BHGH5GP6T5ERDQLI' password='D40AFZISgQBVgbFh617ZBMOSkGw0FU77GFr3HBsHLbqAkXJqvl+b/LS EMfP/wXl1';"
+#      username: 'BHGH5GP6T5ERDQLI'
+#      password: 'D40AFZISgQBVgbFh617ZBMOSkGw0FU77GFr3HBsHLbqAkXJqvl+b/LS EMfP/wXl1'
+#  client:
+#    dns_lookup: "use_all_dns_ips"
+#
+#  api_version: 2.4.0
+
+kafka_conf:
+  bootstrap_servers: "localhost:9092"
+
+redis:
+  host: "localhost" #"redis.finvedic.in"
+  port: 6379
+  
+  
