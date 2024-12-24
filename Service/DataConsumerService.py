@@ -15,36 +15,21 @@ class DataConsumerService:
         }
         self.host = config['redis']['host']
         self.port = config['redis']['port']
+        self.r = Redis(host=self.host, port=self.port, decode_responses=True, db=0)
+
 
     def kafka_consumer(self):
         consumer = KafkaConsumer(
-            "stock-market-data",
-            group_id="stock-market-group",
+            "stock_orders",
+            group_id="stock_orders_group",
             bootstrap_servers=self.consumer_config['bootstrap_servers'],
-            auto_offset_reset='earliest',
+            auto_offset_reset='latest',
             value_deserializer=lambda m: json.loads(m),
-            enable_auto_commit=True
-
         )
 
+        r = Redis(host="localhost", port=6379, decode_responses="True", db=0)
         for message in consumer:
-            key = message.key
-            data = message.value
-            return key, data
+            msg = message.value
+            r.hset(msg['ticker'], mapping=msg)
+            return f"Data save sucessfully: {msg['ticker']}"
 
-    # def save_to_redisdb(self, key, data):
-    #     r = Redis(host=self.host, port=self.port, decode_responses='True', db=0)
-    #     r.hset(key, mapping=data)
-
-    def save_to_redisdb(self, key, data):
-        try:
-            r = Redis(host=self.host, port=self.port, decode_responses=True, db=0)
-            if r.hset(key, mapping=data) == 1:  # Returns True if a new field was added
-                print(f"Data saved successfully under key: {key}")
-                return True
-            else:
-                print(f"No new fields were added for key: {key}. Data may already exist.")
-                return False
-        except Exception as e:
-            print(f"Error saving to Redis: {e}")
-            return False
