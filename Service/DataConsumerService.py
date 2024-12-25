@@ -15,21 +15,21 @@ class DataConsumerService:
         }
         self.host = config['redis']['host']
         self.port = config['redis']['port']
-        self.r = Redis(host=self.host, port=self.port, decode_responses=True, db=0)
 
 
     def kafka_consumer(self):
         consumer = KafkaConsumer(
-            "stock_orders",
-            group_id="stock_orders_group",
+            "market_orders",
+            group_id="market_orders_grp",
             bootstrap_servers=self.consumer_config['bootstrap_servers'],
-            auto_offset_reset='latest',
             value_deserializer=lambda m: json.loads(m),
-        )
+            auto_offset_reset="latest"
 
-        r = Redis(host="localhost", port=6379, decode_responses="True", db=0)
+        )
+        r = Redis(host=self.host, port=self.port, decode_responses="True", db=0)
         for message in consumer:
             msg = message.value
+            print(msg)
             r.hset(msg['ticker'], mapping=msg)
-            return f"Data save sucessfully: {msg['ticker']}"
+            return f"key: {msg['ticker']}, values: {msg}"
 
